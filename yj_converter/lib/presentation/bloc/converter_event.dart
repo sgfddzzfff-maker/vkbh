@@ -35,9 +35,9 @@ class RenameItemEvent extends ConverterEvent {
 
 class ClearDoneEvent extends ConverterEvent {}
 
-class _ItemProgressEvent extends ConverterEvent {
+class ItemProgressEvent extends ConverterEvent {
   final VideoItem item;
-  const _ItemProgressEvent(this.item);
+  const ItemProgressEvent(this.item);
   @override
   List<Object?> get props => [item];
 }
