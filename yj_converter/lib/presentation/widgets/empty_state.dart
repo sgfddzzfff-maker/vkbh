@@ -105,7 +105,7 @@ class _EmptyStateState extends State<EmptyState> {
                   ),
                   const SizedBox(height: 4),
                   const Text(
-                    '-vcodec h263 · -s 176x144 · -r 15\n'
+                    '-vcodec h263 -pix_fmt yuv420p · -s 176x144 · -r 15\n'
                     '-b:v 256k · -acodec amr_nb · -ar 8000\n'
                     '-ac 1 · -ab 12.2k',
                     style: TextStyle(

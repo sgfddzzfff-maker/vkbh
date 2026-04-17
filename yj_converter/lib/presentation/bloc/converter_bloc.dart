@@ -28,7 +28,7 @@ class ConverterBloc extends Bloc<ConverterEvent, ConverterState> {
     on<RemoveItemEvent>(_onRemove);
     on<RenameItemEvent>(_onRename);
     on<ClearDoneEvent>(_onClearDone);
-    on<ItemProgressEvent>(_onItemProgress);
+    on<_ItemProgressEvent>(_onItemProgress);
   }
 
   Future<void> _ensureOutputDir() async {
@@ -83,7 +83,7 @@ class ConverterBloc extends Bloc<ConverterEvent, ConverterState> {
     emit(state.copyWith(items: items, toastMessage: '🧹 تم حذف المكتملة'));
   }
 
-  void _onItemProgress(ItemProgressEvent event, Emitter<ConverterState> emit) {
+  void _onItemProgress(_ItemProgressEvent event, Emitter<ConverterState> emit) {
     final items = state.items.map((i) {
       if (i.id == event.item.id) return event.item;
       return i;
@@ -115,7 +115,7 @@ class ConverterBloc extends Bloc<ConverterEvent, ConverterState> {
   void _startConvert(VideoItem item) {
     _ensureOutputDir().then((_) {
       final sub = convertVideo(item, _outputDir!)
-          .listen((updated) => add(ItemProgressEvent(updated)));
+          .listen((updated) => add(_ItemProgressEvent(updated)));
       _subs[item.id] = sub;
     });
   }
