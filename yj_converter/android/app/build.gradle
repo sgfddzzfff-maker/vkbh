@@ -5,9 +5,9 @@ plugins {
 }
 
 android {
-    namespace "com.youssefjaber.yj_converter"
-    compileSdk 36
-    ndkVersion "28.2.13676358"
+    namespace = "com.youssefjaber.yj_converter"
+    compileSdk = 36
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -23,19 +23,19 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.youssefjaber.yj_converter"
-        minSdkVersion 24
-        targetSdkVersion 36
-        versionCode 1
-        versionName "1.0.0"
-        multiDexEnabled true
+        applicationId = "com.youssefjaber.yj_converter"
+        minSdkVersion = 24
+        targetSdkVersion = 36
+        versionCode = 1
+        versionName = "1.0.0"
+        multiDexEnabled = true
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
-            minifyEnabled false
-            shrinkResources false
+            signingConfig = signingConfigs.debug
+            minifyEnabled = false
+            shrinkResources = false
         }
     }
 }

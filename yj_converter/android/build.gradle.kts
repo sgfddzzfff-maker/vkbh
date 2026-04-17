@@ -2,6 +2,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
@@ -16,11 +17,6 @@ subprojects {
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
 subprojects {
-    project.configurations.all {
-        resolutionStrategy {
-            force("com.arthenica:ffmpeg-kit-full:6.0-2.LTS")
-        }
-    }
     project.evaluationDependsOn(":app")
 }
 

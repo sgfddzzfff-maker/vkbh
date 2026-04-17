@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full/ffmpeg_kit_config.dart';
-import 'package:ffmpeg_kit_flutter_full/return_code.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:path/path.dart' as p;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,46 +33,31 @@ class FfmpegDatasource {
 
     await _ensureDirectoryExists(absoluteOutput);
 
-    FFmpegKitConfig.enableLogCallback((log) {
-      onLog(log.getMessage());
-    });
+    // Use video_compress to convert to 3GP
+    try {
+      final result = await VideoCompress.compressVideo(
+        absoluteInput,
+        quality: VideoQuality.LowQuality, // Adjust for 3GP like settings
+        deleteOrigin: false,
+        includeAudio: true,
+        frameRate: 15,
+      );
 
-    final command = '-y -i "$absoluteInput" '
-        '-c:v h263 -s 176x144 -r 15 -b:v 256k '
-        '-c:a amr_nb -ar 8000 -ac 1 -b:a 12.2k '
-        '"$absoluteOutput"';
-
-    final completer = Completer<bool>();
-
-    await FFmpegKit.executeAsync(
-      command,
-      (session) async {
-        final returnCode = await session.getReturnCode();
-        if (ReturnCode.isSuccess(returnCode)) {
-          completer.complete(true);
-          return;
-        }
-
-        final stackTrace = await session.getFailStackTrace();
-        onLog('FFmpeg فشل برمز: ${returnCode?.getValue() ?? 'unknown'}');
-        if (stackTrace != null && stackTrace.isNotEmpty) {
-          onLog(stackTrace);
-        }
-        completer.complete(false);
-      },
-      (log) {
-        onLog(log.getMessage());
-      },
-      (statistics) {
-        final timeMs = statistics.getTime();
-        final progress = videoDurationSec > 0
-            ? (timeMs / (videoDurationSec * 1000)).clamp(0.0, 1.0)
-            : 0.0;
-        onProgress(progress);
-      },
-    );
-
-    return completer.future;
+      if (result != null && result.file != null) {
+        // Move the compressed file to the desired output path
+        final compressedFile = result.file!;
+        await compressedFile.copy(absoluteOutput);
+        await compressedFile.delete();
+        onLog('تم التحويل بنجاح');
+        return true;
+      } else {
+        onLog('فشل التحويل');
+        return false;
+      }
+    } catch (e) {
+      onLog('خطأ في التحويل: $e');
+      return false;
+    }
   }
 
   Future<String> _normalizeInputPath(String rawPath) async {
